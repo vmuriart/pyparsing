@@ -1,25 +1,20 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 """Setup script for the pyparsing module distribution."""
-from setuptools import setup
 
-import sys
-import os
+from setuptools import setup, find_packages
 
-from pyparsing import __version__ as pyparsing_version
-
-modules = ["pyparsing",]
-
-setup(# Distribution meta-data
-    name = "pyparsing",
-    version = pyparsing_version,
-    description = "Python parsing module",
-    author = "Paul McGuire",
-    author_email = "ptmcg@users.sourceforge.net",
-    url = "http://pyparsing.wikispaces.com/",
-    download_url = "http://sourceforge.net/project/showfiles.php?group_id=97203",
-    license = "MIT License",
-    py_modules = modules,
+setup(
+    name="pyparsing",
+    version="2.1.5",
+    description="Python parsing module",
+    author="Paul McGuire",
+    author_email="ptmcg@users.sourceforge.net",
+    url="http://pyparsing.wikispaces.com/",
+    download_url="http://sourceforge.net/project/showfiles.php?group_id=97203",
+    license="MIT License",
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -33,5 +28,5 @@ setup(# Distribution meta-data
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        ]
-    )
+    ]
+)
