@@ -95,13 +95,13 @@ def getUDType(typestr):
     key = typestr.rstrip(" *")
     if key not in typemap:
         user_defined_types.add(key)
-        typemap[key] = "%s_%s" % (module, key)
+        typemap[key] = "{0!s}_{1!s}".format(module, key)
 
 def typeAsCtypes(typestr):
     if typestr in typemap:
         return typemap[typestr]
     if typestr.endswith("*"):
-        return "POINTER(%s)" % typeAsCtypes(typestr.rstrip(" *"))
+        return "POINTER({0!s})".format(typeAsCtypes(typestr.rstrip(" *")))
     return typestr
 
 # scan input header text for primitive typedefs
@@ -133,35 +133,35 @@ for en_,_,_ in enum_def.scanString(c_header):
         enum_constants.append( (ev.name, ev.value) )
 
 print("from ctypes import *")
-print("%s = CDLL('%s.dll')" % (module, module))
+print("{0!s} = CDLL('{1!s}.dll')".format(module, module))
 print()
 print("# user defined types")
 for tdname,tdtyp in typedefs:
-    print("%s = %s" % (tdname, typemap[tdtyp]))
+    print("{0!s} = {1!s}".format(tdname, typemap[tdtyp]))
 for fntd in fn_typedefs:
-    print("%s = CFUNCTYPE(%s)" % (fntd.fn_name,
+    print("{0!s} = CFUNCTYPE({1!s})".format(fntd.fn_name,
         ',\n    '.join(typeAsCtypes(a.argtype) for a in fntd.fn_args)))
 for udtype in user_defined_types:
-    print("class %s(Structure): pass" % typemap[udtype])
+    print("class {0!s}(Structure): pass".format(typemap[udtype]))
 
 print()
 print("# constant definitions")
 for en,ev in enum_constants:
-    print("%s = %s" % (en,ev))
+    print("{0!s} = {1!s}".format(en, ev))
 
 print()
 print("# functions")
 for fn in functions:
-    prefix = "%s.%s" % (module, fn.fn_name)
+    prefix = "{0!s}.{1!s}".format(module, fn.fn_name)
     
-    print("%s.restype = %s" % (prefix, typeAsCtypes(fn.fn_type)))
+    print("{0!s}.restype = {1!s}".format(prefix, typeAsCtypes(fn.fn_type)))
     if fn.varargs:
-        print("# warning - %s takes variable argument list" % prefix)
+        print("# warning - {0!s} takes variable argument list".format(prefix))
         del fn.fn_args[-1]
 
     if fn.fn_args.asList() != [['void']]:
-        print("%s.argtypes = (%s,)" % (prefix, ','.join(typeAsCtypes(a.argtype) for a in fn.fn_args)))
+        print("{0!s}.argtypes = ({1!s},)".format(prefix, ','.join(typeAsCtypes(a.argtype) for a in fn.fn_args)))
     else:
-        print("%s.argtypes = ()" % (prefix))
+        print("{0!s}.argtypes = ()".format((prefix)))
         
 

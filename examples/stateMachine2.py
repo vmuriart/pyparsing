@@ -58,7 +58,7 @@ def expand_state_definition(source, loc, tokens):
     # define base class for state classes
     baseStateClass = tokens.name + "State"
     statedef.extend([
-        "class %s(object):" % baseStateClass,
+        "class {0!s}(object):".format(baseStateClass),
         "    def __str__(self):",
         "        return self.__class__.__name__",
         "    def next_state(self):",
@@ -66,10 +66,10 @@ def expand_state_definition(source, loc, tokens):
     
     # define all state classes
     statedef.extend(
-        "class %s(%s): pass" % (s,baseStateClass) 
+        "class {0!s}({1!s}): pass".format(s, baseStateClass) 
             for s in states )
     statedef.extend(
-        "%s._next_state_class = %s" % (s,fromTo[s]) 
+        "{0!s}._next_state_class = {1!s}".format(s, fromTo[s]) 
             for s in states if s in fromTo )
            
     return indent + ("\n"+indent).join(statedef)+"\n"
@@ -102,14 +102,14 @@ def expand_named_state_definition(source,loc,tokens):
     
     # define state transition class
     statedef.extend([
-        "class %sTransition:" % baseStateClass,
+        "class {0!s}Transition:".format(baseStateClass),
         "    def __str__(self):",
         "        return self.transitionName",
         ])
     statedef.extend(
-        "%s = %sTransition()" % (tn,baseStateClass) 
+        "{0!s} = {1!s}Transition()".format(tn, baseStateClass) 
             for tn in transitions)
-    statedef.extend("%s.transitionName = '%s'" % (tn,tn) 
+    statedef.extend("{0!s}.transitionName = '{1!s}'".format(tn, tn) 
             for tn in transitions)
 
     # define base class for state classes
@@ -117,31 +117,28 @@ def expand_named_state_definition(source,loc,tokens):
         '.%s does not support transition "%s"' \
         "'% (self, tn)"
     statedef.extend([
-        "class %s(object):" % baseStateClass,
+        "class {0!s}(object):".format(baseStateClass),
         "    def __str__(self):",
         "        return self.__class__.__name__",
         "    def next_state(self,tn):",
         "        try:",
         "            return self.tnmap[tn]()",
         "        except KeyError:",
-        "            raise Exception(%s)" % excmsg,
+        "            raise Exception({0!s})".format(excmsg),
         "    def __getattr__(self,name):",
-        "        raise Exception(%s)" % excmsg,
+        "        raise Exception({0!s})".format(excmsg),
         ])
     
     # define all state classes
     for s in states:
-        statedef.append("class %s(%s): pass" % 
-                                    (s,baseStateClass))
+        statedef.append("class {0!s}({1!s}): pass".format(s, baseStateClass))
 
     # define state transition maps and transition methods
     for s in states:
         trns = list(fromTo[s].items())
-        statedef.append("%s.tnmap = {%s}" % 
-            (s, ",".join("%s:%s" % tn for tn in trns)) )
+        statedef.append("{0!s}.tnmap = {{{1!s}}}".format(s, ",".join("{0!s}:{1!s}".format(*tn) for tn in trns)) )
         statedef.extend([
-            "%s.%s = staticmethod(lambda : %s())" % 
-                                            (s,tn_,to_)
+            "{0!s}.{1!s} = staticmethod(lambda : {2!s}())".format(s, tn_, to_)
                 for tn_,to_ in trns
             ])
 
@@ -173,8 +170,8 @@ class SuffixImporter(object):
     @classmethod
     def trigger_url(cls):
         if cls.suffix is None:
-            raise ValueError('%s.suffix is not set' % cls.__name__)
-        return 'suffix:%s' % cls.suffix
+            raise ValueError('{0!s}.suffix is not set'.format(cls.__name__))
+        return 'suffix:{0!s}'.format(cls.suffix)
 
     @classmethod
     def register(cls):
@@ -197,7 +194,7 @@ class SuffixImporter(object):
             # it probably isn't even a filesystem path
             if sys.path_importer_cache.get(dirpath,False) is None:
                 checkpath = os.path.join(
-                        dirpath,'%s.%s' % (fullname,self.suffix))
+                        dirpath,'{0!s}.{1!s}'.format(fullname, self.suffix))
                 yield checkpath
     
     def find_module(self, fullname, path=None):

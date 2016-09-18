@@ -137,7 +137,7 @@ class SemanticGroup(object):
             self.contents = self.contents[:-1] + self.contents[-1].contents
         
     def __str__(self):
-        return "%s(%s)" % (self.label, 
+        return "{0!s}({1!s})".format(self.label, 
                 " ".join([isinstance(c,str) and c or str(c) for c in self.contents]) )
         
 class OrList(SemanticGroup):
@@ -164,7 +164,7 @@ class Atom(SemanticGroup):
             self.contents = contents[0]
             
     def __str__(self):
-        return "%s%s" % (self.rep, self.contents)
+        return "{0!s}{1!s}".format(self.rep, self.contents)
     
 def makeGroupObject(cls):
     def groupAction(s,l,t):
@@ -208,7 +208,7 @@ bnfDefs = bnf.parseString(grammar)
 # correct answer is 78
 expected = 78
 assert len(bnfDefs) == expected, \
-    "Error, found %d BNF defns, expected %d" % (len(bnfDefs), expected)
+    "Error, found {0:d} BNF defns, expected {1:d}".format(len(bnfDefs), expected)
 
 # list out defns in order they were parsed (to verify accuracy of parsing)
 for k,v in bnfDefs:

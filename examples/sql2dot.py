@@ -70,7 +70,7 @@ create_table_def = Literal("CREATE") + "TABLE" + Word(alphas,alphanums+"_").setR
                     "("+field_list_def.setResultsName("columns")+")"+ ";"
 
 def create_table_act(toks):
-    return """"%(tablename)s" [\n\t label="<%(tablename)s> %(tablename)s | %(columns)s"\n\t shape="record"\n];""" % toks
+    return """"{tablename!s}" [\n\t label="<{tablename!s}> {tablename!s} | {columns!s}"\n\t shape="record"\n];""".format(**toks)
 create_table_def.setParseAction(create_table_act)
 
 add_fkey_def=Literal("ALTER")+"TABLE"+"ONLY" + Word(alphanums+"_").setResultsName("fromtable") + "ADD" \
@@ -78,7 +78,7 @@ add_fkey_def=Literal("ALTER")+"TABLE"+"ONLY" + Word(alphanums+"_").setResultsNam
     +"REFERENCES"+Word(alphanums+"_").setResultsName("totable")+"("+Word(alphanums+"_").setResultsName("tocolumn")+")"+";"    
 
 def add_fkey_act(toks):
-    return """ "%(fromtable)s":%(fromcolumn)s -> "%(totable)s":%(tocolumn)s """ % toks
+    return """ "{fromtable!s}":{fromcolumn!s} -> "{totable!s}":{tocolumn!s} """.format(**toks)
 add_fkey_def.setParseAction(add_fkey_act)
 
 other_statement_def = ( OneOrMore(CharsNotIn(";") )  + ";")

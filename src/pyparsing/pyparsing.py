@@ -310,7 +310,7 @@ class ParseResults(object):
             if k == 'default':
                 args = (args[0], v)
             else:
-                raise TypeError("pop() got an unexpected keyword argument '%s'" % k)
+                raise TypeError("pop() got an unexpected keyword argument '{0!s}'".format(k))
         if (isinstance(args[0], int) or
                         len(args) == 1 or
                         args[0] in self):
@@ -403,7 +403,7 @@ class ParseResults(object):
             return other + self
 
     def __repr__( self ):
-        return "(%s, %s)" % ( repr( self.__toklist ), repr( self.__tokdict ) )
+        return "({0!s}, {1!s})".format(repr( self.__toklist ), repr( self.__tokdict ) )
 
     def __str__( self ):
         return '[' + ', '.join(_ustr(i) if isinstance(i, ParseResults) else repr(i) for i in self.__toklist) + ']'
@@ -545,7 +545,7 @@ class ParseResults(object):
             for k,v in items:
                 if out:
                     out.append(NL)
-                out.append( "%s%s- %s: " % (indent,('  '*depth), k) )
+                out.append( "{0!s}{1!s}- {2!s}: ".format(indent, ('  '*depth), k) )
                 if isinstance(v,ParseResults):
                     if v:
                         out.append( v.dump(indent,depth+1) )
@@ -557,9 +557,9 @@ class ParseResults(object):
             v = self
             for i,vv in enumerate(v):
                 if isinstance(vv,ParseResults):
-                    out.append("\n%s%s[%d]:\n%s%s%s" % (indent,('  '*(depth)),i,indent,('  '*(depth+1)),vv.dump(indent,depth+1) ))
+                    out.append("\n{0!s}{1!s}[{2:d}]:\n{3!s}{4!s}{5!s}".format(indent, ('  '*(depth)), i, indent, ('  '*(depth+1)), vv.dump(indent,depth+1) ))
                 else:
-                    out.append("\n%s%s[%d]:\n%s%s%s" % (indent,('  '*(depth)),i,indent,('  '*(depth+1)),_ustr(vv)))
+                    out.append("\n{0!s}{1!s}[{2:d}]:\n{3!s}{4!s}{5!s}".format(indent, ('  '*(depth)), i, indent, ('  '*(depth+1)), _ustr(vv)))
 
         return "".join(out)
 
@@ -634,7 +634,7 @@ def line( loc, strg ):
         return strg[lastCR+1:]
 
 def _defaultStartDebugAction( instring, loc, expr ):
-    print (("Match " + _ustr(expr) + " at loc " + _ustr(loc) + "(%d,%d)" % ( lineno(loc,instring), col(loc,instring) )))
+    print (("Match " + _ustr(expr) + " at loc " + _ustr(loc) + "({0:d},{1:d})".format(lineno(loc,instring), col(loc,instring) )))
 
 def _defaultSuccessDebugAction( instring, startloc, endloc, expr, toks ):
     print ("Matched " + _ustr(expr) + " -> " + str(toks.asList()))
@@ -1220,7 +1220,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return And( [ self, other ] )
@@ -1230,7 +1230,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return other + self
@@ -1240,7 +1240,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return And( [ self, And._ErrorStop(), other ] )
@@ -1250,7 +1250,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return other - self
@@ -1331,7 +1331,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return MatchFirst( [ self, other ] )
@@ -1341,7 +1341,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return other | self
@@ -1351,7 +1351,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return Or( [ self, other ] )
@@ -1361,7 +1361,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return other ^ self
@@ -1371,7 +1371,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return Each( [ self, other ] )
@@ -1381,7 +1381,7 @@ class ParserElement(object):
         if isinstance( other, basestring ):
             other = ParserElement._literalStringClass( other )
         if not isinstance( other, ParserElement ):
-            warnings.warn("Cannot combine element of type %s with ParserElement" % type(other),
+            warnings.warn("Cannot combine element of type {0!s} with ParserElement".format(type(other)),
                     SyntaxWarning, stacklevel=2)
             return None
         return other & self
@@ -1789,7 +1789,7 @@ class ParseExpression(ParserElement):
             pass
 
         if self.strRepr is None:
-            self.strRepr = "%s:(%s)" % ( self.__class__.__name__, _ustr(self.exprs) )
+            self.strRepr = "{0!s}:({1!s})".format(self.__class__.__name__, _ustr(self.exprs) )
         return self.strRepr
 
     def streamline( self ):
@@ -2081,7 +2081,7 @@ class Each(ParseExpression):
 
         if tmpReqd:
             missing = ", ".join(_ustr(e) for e in tmpReqd)
-            raise ParseException(instring, loc, "Missing one or more required elements (%s)" % missing)
+            raise ParseException(instring, loc, "Missing one or more required elements ({0!s})".format(missing))
 
         # add any unmatched Optionals, in case they have default values defined
         matchOrder += [e for e in self.exprs if isinstance(e,Optional) and e.expr in tmpOpt]
@@ -2187,7 +2187,7 @@ class ParseElementEnhance(ParserElement):
             pass
 
         if self.strRepr is None and self.expr is not None:
-            self.strRepr = "%s:(%s)" % ( self.__class__.__name__, _ustr(self.expr) )
+            self.strRepr = "{0!s}:({1!s})".format(self.__class__.__name__, _ustr(self.expr) )
         return self.strRepr
 
 
@@ -2630,13 +2630,13 @@ def traceParseAction(f):
         s,l,t = paArgs[-3:]
         if len(paArgs)>3:
             thisFunc = paArgs[0].__class__.__name__ + '.' + thisFunc
-        sys.stderr.write( ">>entering %s(line: '%s', %d, %s)\n" % (thisFunc,line(l,s),l,t) )
+        sys.stderr.write( ">>entering {0!s}(line: '{1!s}', {2:d}, {3!s})\n".format(thisFunc, line(l,s), l, t) )
         try:
             ret = f(*paArgs)
         except Exception as exc:
-            sys.stderr.write( "<<leaving %s (exception: %s)\n" % (thisFunc,exc) )
+            sys.stderr.write( "<<leaving {0!s} (exception: {1!s})\n".format(thisFunc, exc) )
             raise
-        sys.stderr.write( "<<leaving %s (ret: %s)\n" % (thisFunc,ret) )
+        sys.stderr.write( "<<leaving {0!s} (ret: {1!s})\n".format(thisFunc, ret) )
         return ret
     try:
         z.__name__ = f.__name__
@@ -2805,7 +2805,7 @@ def oneOf( strs, caseless=False, useRegex=True ):
         #~ print (strs,"->", "|".join( [ _escapeRegexChars(sym) for sym in symbols] ))
         try:
             if len(symbols)==len("".join(symbols)):
-                return Regex("[%s]" % "".join(_escapeRegexRangeChars(sym) for sym in symbols)).setName(' | '.join(symbols))
+                return Regex("[{0!s}]".format("".join(_escapeRegexRangeChars(sym) for sym in symbols))).setName(' | '.join(symbols))
             else:
                 return Regex("|".join(re.escape(sym) for sym in symbols)).setName(' | '.join(symbols))
         except:
@@ -2913,7 +2913,7 @@ def matchOnlyAtCol(n):
     """
     def verifyCol(strg,locn,toks):
         if col(locn,strg) != n:
-            raise ParseException(strg, locn, "matched token not at column %d" % n)
+            raise ParseException(strg, locn, "matched token not at column {0:d}".format(n))
     return verifyCol
 
 def replaceWith(replStr):
@@ -2976,8 +2976,8 @@ def _makeTags(tagStr, xml):
                 Optional("/",default=[False]).setResultsName("empty").setParseAction(lambda s,l,t:t[0]=='/') + Suppress(">")
     closeTag = Combine(_L("</") + tagStr + ">")
 
-    openTag = openTag.setResultsName("start"+"".join(resname.replace(":"," ").title().split())).setName("<%s>" % resname)
-    closeTag = closeTag.setResultsName("end"+"".join(resname.replace(":"," ").title().split())).setName("</%s>" % resname)
+    openTag = openTag.setResultsName("start"+"".join(resname.replace(":"," ").title().split())).setName("<{0!s}>".format(resname))
+    closeTag = closeTag.setResultsName("end"+"".join(resname.replace(":"," ").title().split())).setName("</{0!s}>".format(resname))
     openTag.tag = resname
     closeTag.tag = resname
     return openTag, closeTag
@@ -3020,8 +3020,7 @@ def withAttribute(*args,**attrDict):
             if attrName not in tokens:
                 raise ParseException(s, l, "no matching attribute " + attrName)
             if attrValue != withAttribute.ANY_VALUE and tokens[attrName] != attrValue:
-                raise ParseException(s, l, "attribute '%s' has value '%s', must be '%s'" %
-                                     (attrName, tokens[attrName], attrValue))
+                raise ParseException(s, l, "attribute '{0!s}' has value '{1!s}', must be '{2!s}'".format(attrName, tokens[attrName], attrValue))
     return pa
 withAttribute.ANY_VALUE = object()
 
@@ -3029,7 +3028,7 @@ def withClass(classname, namespace=''):
     """Simplified version of C{L{withAttribute}} when matching on a div class - made
        difficult because C{class} is a reserved word in Python.
        """
-    classattr = "%s:class" % namespace if namespace else "class"
+    classattr = "{0!s}:class".format(namespace) if namespace else "class"
     return withAttribute(**{classattr : classname})
 
 opAssoc = _Constants()
@@ -3066,7 +3065,7 @@ def infixNotation( baseExpr, opList, lpar=Suppress('('), rpar=Suppress(')') ):
     lastExpr = baseExpr | ( lpar + ret + rpar )
     for i,operDef in enumerate(opList):
         opExpr,arity,rightLeftAssoc,pa = (operDef + (None,))[:4]
-        termName = "%s term" % opExpr if arity < 3 else "%s%s term" % opExpr
+        termName = "{0!s} term".format(opExpr) if arity < 3 else "{0!s}{1!s} term".format(*opExpr)
         if arity == 3:
             if opExpr is None or len(opExpr) != 2:
                 raise ValueError("if numterms=3, opExpr must be a tuple or list of two expressions")
@@ -3172,7 +3171,7 @@ def nestedExpr(opener="(", closer=")", content=None, ignoreExpr=quotedString.cop
         ret <<= Group( Suppress(opener) + ZeroOrMore( ignoreExpr | ret | content ) + Suppress(closer) )
     else:
         ret <<= Group( Suppress(opener) + ZeroOrMore( ret | content )  + Suppress(closer) )
-    ret.setName('nested %s%s expression' % (opener,closer))
+    ret.setName('nested {0!s}{1!s} expression'.format(opener, closer))
     return ret
 
 def indentedBlock(blockStatementExpr, indentStack, indent=True):

@@ -34,8 +34,7 @@ class ParseBaseException(Exception):
             raise AttributeError(aname)
 
     def __str__(self):
-        return "%s (at char %d), (line:%d, col:%d)" % \
-               (self.msg, self.loc, self.lineno, self.column)
+        return "{0!s} (at char {1:d}), (line:{2:d}, col:{3:d})".format(self.msg, self.loc, self.lineno, self.column)
 
     def __repr__(self):
         return _ustr(self)
@@ -105,4 +104,4 @@ class RecursiveGrammarException(Exception):
         self.parseElementTrace = parseElementList
 
     def __str__(self):
-        return "RecursiveGrammarException: %s" % self.parseElementTrace
+        return "RecursiveGrammarException: {0!s}".format(self.parseElementTrace)

@@ -31,7 +31,7 @@ class BoolBinOp(object):
     def __init__(self,t):
         self.args = t[0][0::2]
     def __str__(self):
-        sep = " %s " % self.reprsymbol
+        sep = " {0!s} ".format(self.reprsymbol)
         return "(" + sep.join(map(str,self.args)) + ")"
     def __bool__(self):
         return self.evalop(bool(a) for a in self.args)
