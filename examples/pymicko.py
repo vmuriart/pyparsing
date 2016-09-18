@@ -274,7 +274,7 @@ class SemanticException(Exception):
         self._message = message
         self.location = exshared.location
         self.print_location = print_location
-        if exshared.location != None:
+        if exshared.location is not None:
             self.line = lineno(exshared.location, exshared.text)
             self.col = col(exshared.location, exshared.text)
             self.text = line(exshared.location, exshared.text)
@@ -290,10 +290,10 @@ class SemanticException(Exception):
     def __str__(self):
         """String representation of the semantic error"""
         msg = "Error"
-        if self.print_location and (self.line != None):
+        if self.print_location and (self.line is not None):
             msg += " at line %d, col %d" % (self.line, self.col)
         msg += ": %s" % self.message
-        if self.print_location and (self.line != None):
+        if self.print_location and (self.line is not None):
             msg += "\n%s" % self.text
         return msg
 
@@ -325,7 +325,7 @@ class SymbolTableEntry(object):
     
     def attribute_str(self):
         """Returns attribute string (used only for table display)"""
-        return "{0}={1}".format(self.attribute_name, self.attribute) if self.attribute != None else "None"
+        return "{0}={1}".format(self.attribute_name, self.attribute) if self.attribute is not None else "None"
 
 class SymbolTable(object):
     """Class for symbol table of microC program"""
@@ -419,7 +419,7 @@ class SymbolTable(object):
            stype   - symbol type
         """
         index = self.lookup_symbol(sname, skinds)
-        if index == None:
+        if index is None:
             index = self.insert_symbol(sname, skind, stype)
             return index
         else:
@@ -454,7 +454,7 @@ class SymbolTable(object):
            Additionally, checks for range.
         """
         index = self.lookup_symbol(cname, stype=ctype)
-        if index == None:
+        if index is None:
             num = int(cname)
             if ctype == SharedData.TYPES.INT:
                 if (num < SharedData.MIN_INT) or (num > SharedData.MAX_INT):
@@ -701,12 +701,12 @@ class CodeGenerator(object):
         else:
             output_type = None
         if isinstance(operand2, int):
-            output_type = self.symtab.get_type(operand2) if output_type == None else output_type
+            output_type = self.symtab.get_type(operand2) if output_type is None else output_type
             self.free_if_register(operand2)
         else:
-            output_type = SharedData.TYPES.NO_TYPE if output_type == None else output_type
+            output_type = SharedData.TYPES.NO_TYPE if output_type is None else output_type
         #if operand3 is not defined, reserve one free register for it
-        output = self.take_register(output_type) if operand3 == None else operand3
+        output = self.take_register(output_type) if operand3 is None else operand3
         mnemonic = self.arithmetic_mnemonic(operation, output_type)
         self.newline_text("{0}\t{1},{2},{3}".format(mnemonic, self.symbol(operand1), self.symbol(operand2), self.symbol(output)), True)
         return output
@@ -919,13 +919,13 @@ class MicroC(object):
     def warning(self, message, print_location=True):
         """Displays warning message. Uses exshared for current location of parsing"""
         msg = "Warning"
-        if print_location and (exshared.location != None):
+        if print_location and (exshared.location is not None):
             wline = lineno(exshared.location, exshared.text)
             wcol = col(exshared.location, exshared.text)
             wtext = line(exshared.location, exshared.text)
             msg += " at line %d, col %d" % (wline, wcol)
         msg += ": %s" % message
-        if print_location and (exshared.location != None):
+        if print_location and (exshared.location is not None):
             msg += "\n%s" % wtext
         print(msg)
         
@@ -1039,7 +1039,7 @@ class MicroC(object):
             if DEBUG == 2: self.symtab.display()
             if DEBUG > 2: return
         var_index = self.symtab.lookup_symbol(var.name, [SharedData.KINDS.GLOBAL_VAR, SharedData.KINDS.PARAMETER, SharedData.KINDS.LOCAL_VAR])
-        if var_index == None:
+        if var_index is None:
             raise SemanticException("'%s' undefined" % var.name)
         return var_index
 
@@ -1051,7 +1051,7 @@ class MicroC(object):
             if DEBUG == 2: self.symtab.display()
             if DEBUG > 2: return
         var_index = self.symtab.lookup_symbol(assign.var, [SharedData.KINDS.GLOBAL_VAR, SharedData.KINDS.PARAMETER, SharedData.KINDS.LOCAL_VAR])
-        if var_index == None:
+        if var_index is None:
             raise SemanticException("Undefined lvalue '%s' in assignment" % assign.var)
         if not self.symtab.same_types(var_index, assign.exp[0]):
             raise SemanticException("Incompatible types in assignment")
@@ -1099,7 +1099,7 @@ class MicroC(object):
             if DEBUG == 2: self.symtab.display()
             if DEBUG > 2: return
         index = self.symtab.lookup_symbol(fun.name, SharedData.KINDS.FUNCTION)
-        if index == None:
+        if index is None:
             raise SemanticException("'%s' is not a function" % fun.name)
         #save any previous function call data (for nested function calls)
         self.function_call_stack.append(self.function_call_index)
@@ -1282,7 +1282,7 @@ class MicroC(object):
             if DEBUG == 2: self.symtab.display()
             if DEBUG > 2: return
         index = self.symtab.lookup_symbol("main",SharedData.KINDS.FUNCTION)
-        if index == None:
+        if index is None:
             raise SemanticException("Undefined reference to 'main'", False)
         elif self.symtab.get_type(index) != SharedData.TYPES.INT:
             self.warning("Return type of 'main' is not int", False)
