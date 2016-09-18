@@ -72,7 +72,7 @@ class CloseMatch(Token):
 # using the genedata extracted above, look for close matches of a gene sequence
 searchseq = CloseMatch("TTAAATCTAGAAGAT", 3)
 for g in genedata: 
-    print("%s (%d)" % (g.id, g.genelen)) 
+    print("{0!s} ({1:d})".format(g.id, g.genelen)) 
     print("-"*24) 
     for t,startLoc,endLoc in searchseq.scanString(g.gene, overlap=True): 
         matched, mismatches = t[0] 

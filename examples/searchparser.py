@@ -275,8 +275,8 @@ class ParserTest(SearchQueryParser):
             print(item)
             r = self.Parse(item)
             e = self.tests[item]
-            print('Result: %s' % r)
-            print('Expect: %s' % e)
+            print('Result: {0!s}'.format(r))
+            print('Expect: {0!s}'.format(e))
             if e == r:
                 print('Test OK')
             else:

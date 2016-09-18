@@ -59,7 +59,7 @@ dateRef = oneOf(list("0123456"))("weekday") + yyyymmdd("date") + \
                                                         hhmmss("time")
 
 def utcToLocalTime(tokens):
-    utctime = datetime.datetime.strptime("%(date)s %(time)s" % tokens,
+    utctime = datetime.datetime.strptime("{date!s} {time!s}".format(**tokens),
                                                     "%Y/%m/%d %H:%M:%S")
     localtime = utctime-datetime.timedelta(0,time.timezone,0)
     tokens["utcdate"],tokens["utctime"] = tokens["date"],tokens["time"]

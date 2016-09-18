@@ -78,7 +78,7 @@ numWords.ignore(Literal("-"))
 numWords.ignore(CaselessLiteral("and"))
 
 def test(s,expected):
-    print ("Expecting %s" % expected)
+    print ("Expecting {0!s}".format(expected))
     numWords.runTests(s)
 
 test("one hundred twenty hundred", None)

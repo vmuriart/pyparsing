@@ -53,7 +53,7 @@ def verifyLen(s,l,t):
         t1len = len(t[1])
         if t1len != t.len:
             raise ParseFatalException(s,l,\
-                    "invalid data of length %d, expected %s" % (t1len, t.len))
+                    "invalid data of length {0:d}, expected {1!s}".format(t1len, t.len))
     return t[1]
 
 # define punctuation literals

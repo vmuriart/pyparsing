@@ -206,7 +206,7 @@ if __name__ == "__main__":
      
     for t in tests:
         t = t.strip()
-        print(t, "(relative to %s)" % datetime.now())
+        print(t, "(relative to {0!s})".format(datetime.now()))
         res = nlTimeExpression.parseString(t)
         if "calculatedTime" in res:
             print(res.calculatedTime)

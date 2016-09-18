@@ -54,7 +54,7 @@ class Literal(Token):
             warnings.warn("null string passed to Literal; use Empty() instead",
                           SyntaxWarning, stacklevel=2)
             self.__class__ = Empty
-        self.name = '"%s"' % _ustr(self.match)
+        self.name = '"{0!s}"'.format(_ustr(self.match))
         self.errmsg = "Expected " + self.name
         self.mayReturnEmpty = False
         self.mayIndexError = False
@@ -95,7 +95,7 @@ class Keyword(Token):
         except IndexError:
             warnings.warn("null string passed to Keyword; use Empty() instead",
                           SyntaxWarning, stacklevel=2)
-        self.name = '"%s"' % self.match
+        self.name = '"{0!s}"'.format(self.match)
         self.errmsg = "Expected " + self.name
         self.mayReturnEmpty = False
         self.mayIndexError = False
@@ -146,7 +146,7 @@ class CaselessLiteral(Literal):
         super(CaselessLiteral, self).__init__(matchString.upper())
         # Preserve the defining literal.
         self.returnString = matchString
-        self.name = "'%s'" % self.returnString
+        self.name = "'{0!s}'".format(self.returnString)
         self.errmsg = "Expected " + self.name
 
     def parseImpl(self, instring, loc, doActions=True):
@@ -225,16 +225,14 @@ class Word(Token):
         if ' ' not in self.initCharsOrig + self.bodyCharsOrig and (
                             min == 1 and max == 0 and exact == 0):
             if self.bodyCharsOrig == self.initCharsOrig:
-                self.reString = "[%s]+" % _escapeRegexRangeChars(
-                    self.initCharsOrig)
+                self.reString = "[{0!s}]+".format(_escapeRegexRangeChars(
+                    self.initCharsOrig))
             elif len(self.initCharsOrig) == 1:
-                self.reString = "%s[%s]*" % \
-                                (re.escape(self.initCharsOrig),
-                                 _escapeRegexRangeChars(self.bodyCharsOrig),)
+                self.reString = "{0!s}[{1!s}]*".format(re.escape(self.initCharsOrig),
+                                 _escapeRegexRangeChars(self.bodyCharsOrig))
             else:
-                self.reString = "[%s][%s]*" % \
-                                (_escapeRegexRangeChars(self.initCharsOrig),
-                                 _escapeRegexRangeChars(self.bodyCharsOrig),)
+                self.reString = "[{0!s}][{1!s}]*".format(_escapeRegexRangeChars(self.initCharsOrig),
+                                 _escapeRegexRangeChars(self.bodyCharsOrig))
             if self.asKeyword:
                 self.reString = r"\b" + self.reString + r"\b"
             try:
@@ -293,11 +291,11 @@ class Word(Token):
                     return s
 
             if self.initCharsOrig != self.bodyCharsOrig:
-                self.strRepr = "W:(%s,%s)" % (
+                self.strRepr = "W:({0!s},{1!s})".format(
                     charsAsStr(self.initCharsOrig),
                     charsAsStr(self.bodyCharsOrig))
             else:
-                self.strRepr = "W:(%s)" % charsAsStr(self.initCharsOrig)
+                self.strRepr = "W:({0!s})".format(charsAsStr(self.initCharsOrig))
 
         return self.strRepr
 
@@ -329,7 +327,7 @@ class Regex(Token):
                 self.re = re.compile(self.pattern, self.flags)
                 self.reString = self.pattern
             except sre_constants.error:
-                warnings.warn("invalid pattern (%s) passed to Regex" % pattern,
+                warnings.warn("invalid pattern ({0!s}) passed to Regex".format(pattern),
                               SyntaxWarning, stacklevel=2)
                 raise
 
@@ -368,7 +366,7 @@ class Regex(Token):
             pass
 
         if self.strRepr is None:
-            self.strRepr = "Re:(%s)" % repr(self.pattern)
+            self.strRepr = "Re:({0!s})".format(repr(self.pattern))
 
         return self.strRepr
 
@@ -426,38 +424,36 @@ class QuotedString(Token):
 
         if multiline:
             self.flags = re.MULTILINE | re.DOTALL
-            self.pattern = r'%s(?:[^%s%s]' % \
-                           (re.escape(self.quoteChar),
+            self.pattern = r'{0!s}(?:[^{1!s}{2!s}]'.format(re.escape(self.quoteChar),
                             _escapeRegexRangeChars(self.endQuoteChar[0]),
                             (escChar is not None and _escapeRegexRangeChars(
                                 escChar) or ''))
         else:
             self.flags = 0
-            self.pattern = r'%s(?:[^%s\n\r%s]' % \
-                           (re.escape(self.quoteChar),
+            self.pattern = r'{0!s}(?:[^{1!s}\n\r{2!s}]'.format(re.escape(self.quoteChar),
                             _escapeRegexRangeChars(self.endQuoteChar[0]),
                             (escChar is not None and _escapeRegexRangeChars(
                                 escChar) or ''))
         if len(self.endQuoteChar) > 1:
             self.pattern += (
                 '|(?:' + ')|(?:'.join(
-                    "%s[^%s]" % (re.escape(self.endQuoteChar[:i]),
+                    "{0!s}[^{1!s}]".format(re.escape(self.endQuoteChar[:i]),
                                  _escapeRegexRangeChars(self.endQuoteChar[i]))
                     for i in range(len(self.endQuoteChar) - 1, 0, -1)) + ')'
             )
         if escQuote:
-            self.pattern += (r'|(?:%s)' % re.escape(escQuote))
+            self.pattern += (r'|(?:{0!s})'.format(re.escape(escQuote)))
         if escChar:
-            self.pattern += (r'|(?:%s.)' % re.escape(escChar))
+            self.pattern += (r'|(?:{0!s}.)'.format(re.escape(escChar)))
             self.escCharReplacePattern = re.escape(self.escChar) + "(.)"
-        self.pattern += (r')*%s' % re.escape(self.endQuoteChar))
+        self.pattern += (r')*{0!s}'.format(re.escape(self.endQuoteChar)))
 
         try:
             self.re = re.compile(self.pattern, self.flags)
             self.reString = self.pattern
         except sre_constants.error:
             warnings.warn(
-                "invalid pattern (%s) passed to Regex" % self.pattern,
+                "invalid pattern ({0!s}) passed to Regex".format(self.pattern),
                 SyntaxWarning, stacklevel=2)
             raise
 
@@ -509,7 +505,7 @@ class QuotedString(Token):
             pass
 
         if self.strRepr is None:
-            self.strRepr = "quoted string, starting with %s ending with %s" % (
+            self.strRepr = "quoted string, starting with {0!s} ending with {1!s}".format(
                 self.quoteChar, self.endQuoteChar)
 
         return self.strRepr
@@ -574,9 +570,9 @@ class CharsNotIn(Token):
 
         if self.strRepr is None:
             if len(self.notChars) > 4:
-                self.strRepr = "!W:(%s...)" % self.notChars[:4]
+                self.strRepr = "!W:({0!s}...)".format(self.notChars[:4])
             else:
-                self.strRepr = "!W:(%s)" % self.notChars
+                self.strRepr = "!W:({0!s})".format(self.notChars)
 
         return self.strRepr
 

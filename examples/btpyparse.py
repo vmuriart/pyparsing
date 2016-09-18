@@ -18,7 +18,7 @@ class Macro(object):
     def __init__(self, name):
         self.name = name
     def __repr__(self):
-        return 'Macro("%s")' % self.name
+        return 'Macro("{0!s}")'.format(self.name)
     def __eq__(self, other):
         return self.name == other.name
     def __ne__(self, other):
