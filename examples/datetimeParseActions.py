@@ -29,8 +29,7 @@ def convertToDatetime(s,loc,tokens):
         # on the integer expression above
         return datetime(tokens.year, tokens.month, tokens.day).date()
     except Exception as ve:
-        errmsg = "'%d/%d/%d' is not a valid date, %s" % \
-            (tokens.year, tokens.month, tokens.day, ve)
+        errmsg = "'{0:d}/{1:d}/{2:d}' is not a valid date, {3!s}".format(tokens.year, tokens.month, tokens.day, ve)
         raise ParseException(s, loc, errmsg)
 date_expr.setParseAction(convertToDatetime)
 

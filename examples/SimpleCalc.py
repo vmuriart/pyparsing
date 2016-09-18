@@ -52,7 +52,7 @@ def evaluateStack( s ):
     elif op[0].isalpha():
         if op in variables:
             return variables[op]
-        raise Exception("invalid identifier '%s'" % op)
+        raise Exception("invalid identifier '{0!s}'".format(op))
     else:
         return float( op )
 

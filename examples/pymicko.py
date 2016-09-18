@@ -291,10 +291,10 @@ class SemanticException(Exception):
         """String representation of the semantic error"""
         msg = "Error"
         if self.print_location and (self.line is not None):
-            msg += " at line %d, col %d" % (self.line, self.col)
-        msg += ": %s" % self.message
+            msg += " at line {0:d}, col {1:d}".format(self.line, self.col)
+        msg += ": {0!s}".format(self.message)
         if self.print_location and (self.line is not None):
-            msg += "\n%s" % self.text
+            msg += "\n{0!s}".format(self.text)
         return msg
 
 ##########################################################################################
@@ -347,7 +347,7 @@ class SymbolTable(object):
         if text == "":
             raise Exception("Symbol table index out of range")
         else:
-            raise Exception("Symbol table error: %s" % text)
+            raise Exception("Symbol table error: {0!s}".format(text))
 
     def display(self):
         """Displays the symbol table content"""
@@ -423,7 +423,7 @@ class SymbolTable(object):
             index = self.insert_symbol(sname, skind, stype)
             return index
         else:
-            raise SemanticException("Redefinition of '%s'" % sname)
+            raise SemanticException("Redefinition of '{0!s}'".format(sname))
 
     def insert_global_var(self, vname, vtype):
         "Inserts a new global variable"
@@ -458,10 +458,10 @@ class SymbolTable(object):
             num = int(cname)
             if ctype == SharedData.TYPES.INT:
                 if (num < SharedData.MIN_INT) or (num > SharedData.MAX_INT):
-                    raise SemanticException("Integer constant '%s' out of range" % cname)
+                    raise SemanticException("Integer constant '{0!s}' out of range".format(cname))
             elif ctype == SharedData.TYPES.UNSIGNED:
                 if (num < 0) or (num > SharedData.MAX_UNSIGNED):
-                    raise SemanticException("Unsigned constant '%s' out of range" % cname)
+                    raise SemanticException("Unsigned constant '{0!s}' out of range".format(cname))
             index = self.insert_symbol(cname, SharedData.KINDS.CONSTANT, ctype)
         return index
 
@@ -566,7 +566,7 @@ class CodeGenerator(object):
         """Compiler error exception. It should happen only if something is wrong with compiler.
            This exeption is not handled by the compiler, so as to allow traceback printing
         """
-        raise Exception("Compiler error: %s" % text)
+        raise Exception("Compiler error: {0!s}".format(text))
 
     def take_register(self, rtype = SharedData.TYPES.NO_TYPE):
         """Reserves one working register and sets its type"""
@@ -590,7 +590,7 @@ class CodeGenerator(object):
     def free_register(self, reg):
         """Releases working register"""
         if reg not in self.used_registers:
-            self.error("register %s is not taken" % self.REGISTERS[reg])
+            self.error("register {0!s} is not taken".format(self.REGISTERS[reg]))
         self.used_registers.remove(reg)
         self.free_registers.append(reg)
         self.free_registers.sort(reverse = True)
@@ -636,7 +636,7 @@ class CodeGenerator(object):
         self.used_registers_stack.append(used[:])
         used.sort()
         for reg in used:
-            self.newline_text("PUSH\t%s" % SharedData.REGISTERS[reg], True)
+            self.newline_text("PUSH\t{0!s}".format(SharedData.REGISTERS[reg]), True)
         self.free_registers.extend(used)
         self.free_registers.sort(reverse = True)
 
@@ -646,7 +646,7 @@ class CodeGenerator(object):
         self.used_registers = used[:]
         used.sort(reverse = True)
         for reg in used:
-            self.newline_text("POP \t%s" % SharedData.REGISTERS[reg], True)
+            self.newline_text("POP \t{0!s}".format(SharedData.REGISTERS[reg]), True)
             self.free_registers.remove(reg)
 
     def text(self, text):
@@ -752,11 +752,11 @@ class CodeGenerator(object):
 
     def push(self, operand):
         """Generates a push operation"""
-        self.newline_text("PUSH\t%s" % self.symbol(operand), True)
+        self.newline_text("PUSH\t{0!s}".format(self.symbol(operand)), True)
 
     def pop(self, operand):
         """Generates a pop instruction"""
-        self.newline_text("POP \t%s" % self.symbol(operand), True)
+        self.newline_text("POP \t{0!s}".format(self.symbol(operand)), True)
 
     def compare(self, operand1, operand2):
         """Generates a compare instruction
@@ -923,10 +923,10 @@ class MicroC(object):
             wline = lineno(exshared.location, exshared.text)
             wcol = col(exshared.location, exshared.text)
             wtext = line(exshared.location, exshared.text)
-            msg += " at line %d, col %d" % (wline, wcol)
-        msg += ": %s" % message
+            msg += " at line {0:d}, col {1:d}".format(wline, wcol)
+        msg += ": {0!s}".format(message)
         if print_location and (exshared.location is not None):
-            msg += "\n%s" % wtext
+            msg += "\n{0!s}".format(wtext)
         print(msg)
         
 
@@ -1040,7 +1040,7 @@ class MicroC(object):
             if DEBUG > 2: return
         var_index = self.symtab.lookup_symbol(var.name, [SharedData.KINDS.GLOBAL_VAR, SharedData.KINDS.PARAMETER, SharedData.KINDS.LOCAL_VAR])
         if var_index is None:
-            raise SemanticException("'%s' undefined" % var.name)
+            raise SemanticException("'{0!s}' undefined".format(var.name))
         return var_index
 
     def assignment_action(self, text, loc, assign):
@@ -1052,7 +1052,7 @@ class MicroC(object):
             if DEBUG > 2: return
         var_index = self.symtab.lookup_symbol(assign.var, [SharedData.KINDS.GLOBAL_VAR, SharedData.KINDS.PARAMETER, SharedData.KINDS.LOCAL_VAR])
         if var_index is None:
-            raise SemanticException("Undefined lvalue '%s' in assignment" % assign.var)
+            raise SemanticException("Undefined lvalue '{0!s}' in assignment".format(assign.var))
         if not self.symtab.same_types(var_index, assign.exp[0]):
             raise SemanticException("Incompatible types in assignment")
         self.codegen.move(assign.exp[0], var_index)
@@ -1068,7 +1068,7 @@ class MicroC(object):
         m = list(mul)
         while len(m) > 1:
             if not self.symtab.same_types(m[0], m[2]):
-                raise SemanticException("Invalid opernads to binary '%s'" % m[1])
+                raise SemanticException("Invalid opernads to binary '{0!s}'".format(m[1]))
             reg = self.codegen.arithmetic(m[1], m[0], m[2])
             #replace first calculation with it's result
             m[0:3] = [reg]
@@ -1085,7 +1085,7 @@ class MicroC(object):
         n = list(num)
         while len(n) > 1:
             if not self.symtab.same_types(n[0], n[2]):
-                raise SemanticException("Invalid opernads to binary '%s'" % n[1])
+                raise SemanticException("Invalid opernads to binary '{0!s}'".format(n[1]))
             reg = self.codegen.arithmetic(n[1], n[0], n[2])
             #replace first calculation with it's result
             n[0:3] = [reg]
@@ -1100,7 +1100,7 @@ class MicroC(object):
             if DEBUG > 2: return
         index = self.symtab.lookup_symbol(fun.name, SharedData.KINDS.FUNCTION)
         if index is None:
-            raise SemanticException("'%s' is not a function" % fun.name)
+            raise SemanticException("'{0!s}' is not a function".format(fun.name))
         #save any previous function call data (for nested function calls)
         self.function_call_stack.append(self.function_call_index)
         self.function_call_index = index
@@ -1118,7 +1118,7 @@ class MicroC(object):
         arg_ordinal = len(self.function_arguments)
         #check argument's type
         if not self.symtab.same_type_as_argument(arg.exp, self.function_call_index, arg_ordinal):
-            raise SemanticException("Incompatible type for argument %d in '%s'" % (arg_ordinal + 1, self.symtab.get_name(self.function_call_index)))
+            raise SemanticException("Incompatible type for argument {0:d} in '{1!s}'".format(arg_ordinal + 1, self.symtab.get_name(self.function_call_index)))
         self.function_arguments.append(arg.exp)
 
     def function_call_action(self, text, loc, fun):
@@ -1130,7 +1130,7 @@ class MicroC(object):
             if DEBUG > 2: return
         #check number of arguments
         if len(self.function_arguments) != self.symtab.get_attribute(self.function_call_index):
-            raise SemanticException("Wrong number of arguments for function '%s'" % fun.name)
+            raise SemanticException("Wrong number of arguments for function '{0!s}'".format(fun.name))
         #arguments should be pushed to stack in reverse order
         self.function_arguments.reverse()
         self.codegen.function_call(self.function_call_index, self.function_arguments)
@@ -1332,7 +1332,7 @@ if 0:
     try:
         parse = stdin if input_file == stdin else open(input_file,'r')
     except Exception:
-        print("Input file '%s' open error" % input_file)
+        print("Input file '{0!s}' open error".format(input_file))
         exit(2)
     mc.parse_file(parse)
     #if you want to see the final symbol table, uncomment next line
@@ -1342,7 +1342,7 @@ if 0:
         out.write(mc.codegen.code)
         out.close
     except Exception:
-        print("Output file '%s' open error" % output_file)
+        print("Output file '{0!s}' open error".format(output_file))
         exit(2)
 
 ##########################################################################################

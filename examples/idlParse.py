@@ -125,7 +125,7 @@ def test( strng ):
         tokens = bnf.parseString( strng )
         print("tokens = ")
         pprint.pprint( tokens.asList() )
-        imgname = "idlParse%02d.bmp" % testnum
+        imgname = "idlParse{0:02d}.bmp".format(testnum)
         testnum += 1
         #~ tree2image.str2image( str(tokens.asList()), imgname )
     except ParseException as err:
