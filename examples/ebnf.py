@@ -136,7 +136,9 @@ for name in all_names:
     #~ expr.setDebug()
 
 
-def parse(ebnf, given_table={}):
+def parse(ebnf, given_table=None):
+    if given_table is None:
+        given_table = {}
     symbol_table.clear()
     symbol_table.update(given_table)
     forward_count.value = 0
