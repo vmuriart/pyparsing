@@ -22,4 +22,4 @@ functionCall = Keyword("int") + ident("name") + "(" + arglist("args") + ")" + ";
 for fn,s,e in functionCall.scanString(testdata):
     print(fn.name)
     for a in fn.args:
-        print(" - %(name)s (%(type)s)" % a)
+        print(" - {name!s} ({type!s})".format(**a))

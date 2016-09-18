@@ -18,9 +18,9 @@ of their country."""
 def reportLongWords(st,locn,toks):
     word = toks[0]
     if len(word) > 3:
-        print("Found '%s' on line %d at column %d" % (word, lineno(locn,st), col(locn,st)))
+        print("Found '{0!s}' on line {1:d} at column {2:d}".format(word, lineno(locn,st), col(locn,st)))
         print("The full line of text was:")
-        print("'%s'" % line(locn,st))
+        print("'{0!s}'".format(line(locn,st)))
         print((" "*col(locn,st))+" ^")
         print() 
         
@@ -38,7 +38,7 @@ class Token(object):
         self.lineNo = lineno(locn,st)
         self.col = col(locn,st)
     def __str__(self):
-        return "%(tokenString)s (line: %(lineNo)d, col: %(col)d)" % self.__dict__
+        return "{tokenString!s} (line: {lineNo:d}, col: {col:d})".format(**self.__dict__)
         
 def createTokenObject(st,locn,toks):
     return Token(st,locn, toks[0])
