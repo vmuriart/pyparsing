@@ -1481,8 +1481,10 @@ class ParserElement(object):
     def checkRecursion( self, parseElementList ):
         pass
 
-    def validate( self, validateTrace=[] ):
+    def validate( self, validateTrace=None ):
         """Check defined expressions for valid structure, check for infinite recursive definitions."""
+        if validateTrace is None:
+            validateTrace = []
         self.checkRecursion( [] )
 
     def parseFile( self, file_or_filename, parseAll=False ):
@@ -1830,7 +1832,9 @@ class ParseExpression(ParserElement):
         ret = super(ParseExpression,self).setResultsName(name,listAllMatches)
         return ret
 
-    def validate( self, validateTrace=[] ):
+    def validate( self, validateTrace=None ):
+        if validateTrace is None:
+            validateTrace = []
         tmp = validateTrace[:]+[self]
         for e in self.exprs:
             e.validate(tmp)
@@ -2174,7 +2178,9 @@ class ParseElementEnhance(ParserElement):
         if self.expr is not None:
             self.expr.checkRecursion( subRecCheckList )
 
-    def validate( self, validateTrace=[] ):
+    def validate( self, validateTrace=None ):
+        if validateTrace is None:
+            validateTrace = []
         tmp = validateTrace[:]+[self]
         if self.expr is not None:
             self.expr.validate(tmp)
@@ -2482,7 +2488,9 @@ class Forward(ParseElementEnhance):
                 self.expr.streamline()
         return self
 
-    def validate( self, validateTrace=[] ):
+    def validate( self, validateTrace=None ):
+        if validateTrace is None:
+            validateTrace = []
         if self not in validateTrace:
             tmp = validateTrace[:]+[self]
             if self.expr is not None:

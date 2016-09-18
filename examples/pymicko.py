@@ -392,13 +392,17 @@ class SymbolTable(object):
             self.error()
         self.table_len = len(self.table)
 
-    def lookup_symbol(self, sname, skind=list(SharedData.KINDS.keys()), stype=list(SharedData.TYPES.keys())):
+    def lookup_symbol(self, sname, skind=None, stype=None):
         """Searches for symbol, from the end to the begining.
            Returns symbol index or None
            sname - symbol name
            skind - symbol kind (one kind, list of kinds, or None) deafult: any kind
            stype - symbol type (or None) default: any type
         """
+        if skind is None:
+            skind = list(SharedData.KINDS.keys())
+        if stype is None:
+            stype = list(SharedData.TYPES.keys())
         skind = skind if isinstance(skind, list) else [skind]
         stype = stype if isinstance(stype, list) else [stype]
         for i, sym in [[x, self.table[x]] for x in range(len(self.table) - 1, SharedData.LAST_WORKING_REGISTER, -1)]:
