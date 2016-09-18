@@ -113,7 +113,7 @@ def __antlrAlternativesConverter(pyparsingRules, antlrBlock):
         rule = __antlrAlternativeConverter(pyparsingRules, antlrBlock.a1)
     else:
         raise Exception('Not yet implemented')
-    assert rule != None
+    assert rule is not None
     return rule
 
 def __antlrAlternativeConverter(pyparsingRules, antlrAlternative):
@@ -144,13 +144,13 @@ def __antlrAlternativeConverter(pyparsingRules, antlrAlternative):
         rule = Group(And(elementList))("anonymous_and")
     else:
         rule = elementList[0]
-    assert rule != None        
+    assert rule is not None        
     return rule
 
 def __antlrRuleConverter(pyparsingRules, antlrRule):
     rule = None
     rule = __antlrAlternativesConverter(pyparsingRules, antlrRule)
-    assert rule != None
+    assert rule is not None
     rule(antlrRule.ruleName)
     return rule
 
@@ -167,7 +167,7 @@ def antlrConverter(antlrGrammarTree):
         pyparsingRules[antlrRule.ruleName] = Forward() # antlr is a top down grammar
     for antlrRuleName, antlrRule in list(antlrRules.items()):
         pyparsingRule = __antlrRuleConverter(pyparsingRules, antlrRule)
-        assert pyparsingRule != None
+        assert pyparsingRule is not None
         pyparsingRules[antlrRuleName] << pyparsingRule 
     return pyparsingRules
 
